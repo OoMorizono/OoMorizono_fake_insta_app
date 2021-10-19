@@ -17,7 +17,7 @@
     </div>
     @endforeach
 </section>
-<a href="{{ route('articles.create') }}" class="position-fixed fs-1 bottom-right-30 zindex-sticky">
+<a href="{{ route('articles.create') }}" class="position-fixed fs-1 bottom-0 end-0" style="color:#ff00d4;">
     <i class="fas fa-plus-circle"></i>
 </a>
 @endsection
