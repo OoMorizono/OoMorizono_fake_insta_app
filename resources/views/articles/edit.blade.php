@@ -1,7 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', '編集画面')
 @section('content')
-<h1>詳細編集</h1>
 <section>
     <article class="card shadow">
         <figure class="m-3">

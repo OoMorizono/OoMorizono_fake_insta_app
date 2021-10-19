@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Article;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class ArticlePolicy
 {
@@ -16,9 +17,9 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(?User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -28,9 +29,9 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Article $article)
+    public function view(?User $user, Article $article)
     {
-        //
+        return true;
     }
 
     /**
@@ -41,7 +42,7 @@ class ArticlePolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +54,9 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article)
     {
-        //
+        return $user->id === $article->user_id
+            ? Response::allow()
+            : Response::deny('許可されていない操作です');
     }
 
     /**
@@ -65,7 +68,9 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
-        //
+        return $user->id === $article->user_id
+            ? Response::allow()
+            : Response::deny('許可されていない操作です');
     }
 
     /**

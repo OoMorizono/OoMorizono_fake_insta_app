@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 
 class ArticleController extends Controller
 {
+    public function __construct()
+    {
+        // アクションに合わせたpolicyのメソッドで認可されていないユーザーはエラーを投げる
+        $this->authorizeResource(Article::class, 'article');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -114,6 +119,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+
         // バリデーション
         $request->validate([
             'caption' => 'required|max:255',

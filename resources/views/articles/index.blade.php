@@ -1,8 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', '一覧画面')
 @section('content')
 
-<h1>画像一覧</h1>
 <section class="row position-relative" data-masonry='{ "percentPosition": true }'>
     @foreach ($articles as $article)
     <div class="col-6 col-md-4 col-lg-3 col-sl-2 mb-4">
