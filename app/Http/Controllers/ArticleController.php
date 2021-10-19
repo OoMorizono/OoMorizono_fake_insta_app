@@ -56,7 +56,7 @@ class ArticleController extends Controller
         $article->fill($request->all());
 
         // ユーザーIDを追加
-        $article->user_id = 1;
+        $article->user_id = $request->user()->id;
 
         // ファイルの用意
         $file = $request->file;

@@ -16,7 +16,8 @@ use App\Http\Controllers\ArticleController;
 */
 
 
-Route::get('/', [ArticleController::class, 'index']);
+Route::get('/', [ArticleController::class, 'index'])
+    ->name('root');
 
 Route::resource('articles', ArticleController::class)
     ->middleware(['auth'])
