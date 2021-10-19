@@ -1,1 +1,1 @@
-<h1 class="text-xl">Photo Share</h1>
+<h1 class="text-xl"><span style="color:#1900ff;">| ||</span>THE FAKE INSTA</h1>
