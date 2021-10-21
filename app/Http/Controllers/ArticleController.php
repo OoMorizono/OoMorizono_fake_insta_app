@@ -25,7 +25,8 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
+        $articles = Article::with('attachments')->latest()->Paginate(10);
+
         return view('articles.index', compact('articles'));
     }
 
@@ -47,47 +48,38 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'file' => 'required|file|image',
-            'caption' => 'required|max:255',
-            'info' => 'max:255'
-        ]);
-
-        // Articleのデータを用意
-        $article = new Article();
-        $article->fill($request->all());
-
-        // ユーザーIDを追加
+        $article = new Article($request->all());
         $article->user_id = $request->user()->id;
 
-        // ファイルの用意
-        $file = $request->file;
-        $name = $file->getClientOriginalName();
+        $files = $request->file('file');
 
-        // トランザクション開始
         DB::beginTransaction();
         try {
-            // Article保存
             $article->save();
-            // 画像ファイル保存
-            $path = Storage::putFile('articles', $file);
-            // Attachmentモデルの情報を用意
-            $attachment = new Attachment([
-                'article_id' => $article->id,
-                'org_name' => basename($file),
-                'name' => basename($path)
-            ]);
-            // Attachment保存
-            $attachment->save();
-            // トランザクション終了(成功)
+
+            foreach ($files as $file) {
+                $file_name = $file->getClientOriginalName();
+                $path = Storage::putFile('articles', $file);
+                $attachment = new Attachment();
+                $attachment->article_id = $article->id;
+                $attachment->org_name = $file_name;
+                $attachment->name = basename($path);
+                $attachment->save();
+            }
             DB::commit();
         } catch (\Exception $e) {
-            // トランザクション終了(失敗)
+            foreach ($file as $file) {
+                if (!empty($path)) {
+                    Storage::delete($path);
+                }
+            }
             DB::rollback();
-            back()->withErrors(['error' => '保存に失敗しました']);
+            return back()
+                ->withErrors($e->getMessage());
         }
-
-        return redirect(route('articles.index'))->with(['flash_message' => '登録が完了しました']);
+        return redirect()
+            ->route('articles.index')
+            ->with(['flash_message' => '登録が完了しました']);
     }
 
     /**
@@ -156,35 +148,11 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        // DB::beginTransaction();
-        // try {
-        //     // 削除処理
-        //     DB::commit();
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     return back()
-        //         ->withErrors($e->getMessage());
-        // }
-        // return redirect()
-        //     ->route('articles.index')
-        //     ->with(['flash_message' => '削除しました']);
+        $attachments = $article->attachments;
+        $article->delete();
 
-        $this->authorize('delete', $article);
-        $path = $article->image_path;
-        DB::beginTransaction();
-        try {
-
-            $article->delete();
-            $article->attachment()->delete();
-            if (!Storage::delete($path)) {
-                throw new Exception('ファイルの削除に失敗しました');
-            }
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()
-                ->withErrors($e->getMessage());
+        foreach ($attachments as $attachment) {
+            Storage::delete('articles/' . $attachment->name);
         }
         return redirect()
             ->route('articles.index')

@@ -8,8 +8,7 @@
             <div class="row m-3">
                 <div class="mb-3">
                     <label for="file" class="form-label">画像ファイルを選択してください</label>
-                    <input type="file" name="file" id="file" class="form-control">
-                </div>
+<input type="file" name="file[]" id="file" class="form-control" multiple="multiple">                </div>
                 <div class="mb-3">
                     <label for="caption" class="form-label">イメージの説明を入力してください</label>
                     <input type="text" name="caption" id="caption" class="form-control">

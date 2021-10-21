@@ -7,16 +7,21 @@
     <article class="card shadow position-relative">
         <figure class="m-3">
             <div class="row">
-                <div class="col-6">
-                    <img src="{{ $article->image_url }}" width="100%">
+                    <div class="flex flex-wrap -mx-1 lg:-mx-4 mb-4">
+                        @foreach ($article->attachments as $attachment)
+                        <article class="w-full px-4 md:w-1/4 text-xl text-gray-800 leading-normal">
+                            <img class="w-full mb-2" src="{{ Storage::url('articles/' . $attachment->name) }}"
+                                alt="image">
+                        </article>
+                        @endforeach
+                    </div>
+                    <div class="col-6">
+                        <figcaption>
+                            <h1> {{ $article->caption }} </h1>
+                            <h3> {{ $article->info }} </h3>
+                        </figcaption>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <figcaption>
-                        <h1> {{ $article->caption }} </h1>
-                        <h3> {{ $article->info }} </h3>
-                    </figcaption>
-                </div>
-            </div>
         </figure>
         @can('update', $article)
         <a href="{{ route('articles.edit', $article) }}">
