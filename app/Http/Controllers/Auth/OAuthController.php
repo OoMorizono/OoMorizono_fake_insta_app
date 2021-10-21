@@ -44,7 +44,6 @@ class OAuthController extends Controller
                 'name' => $provider
             ]);
 
-            // dd($socialUser,$user, $identityProvider, $user->identityProvider($identityProvider));
             DB::beginTransaction();
             try {
                 $user->save();
