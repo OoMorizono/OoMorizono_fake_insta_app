@@ -2,6 +2,7 @@
 @section('title', '一覧画面')
 @section('content')
 
+
 <section class="row position-relative" data-masonry='{ "percentPosition": true }'>
     @foreach ($articles as $article)
     <div class="mb-4">

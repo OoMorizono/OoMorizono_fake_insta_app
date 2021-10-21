@@ -1,6 +1,7 @@
 @extends('layouts.main')
 @section('title', '新規登録')
 @section('content')
+@include('partial.errors')
 <div class="col-8 col-offset-2 mx-auto">
     <form action="{{ route('articles.store') }}" method="post" enctype="multipart/form-data">
         <div class="card mb-3">
