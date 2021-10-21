@@ -51,25 +51,33 @@ class ArticleController extends Controller
         $article = new Article($request->all());
         $article->user_id = $request->user()->id;
         $paths = [];
+        $files = $request->file;
 
         DB::beginTransaction();
         try {
             $article->save();
 
-            if ($files = $request->file('file')) {
+            $paths = [];
                 foreach ($files as $file) {
                     $file_name = $file->getClientOriginalName();
                     $path = Storage::putFile('articles', $file);
-                    $attachment = new Attachment();
-                    $attachment->article_id = $article->id;
-                    $attachment->org_name = $file_name;
-                    $attachment->name = basename($path);
-                    $attachment->save();
-                }
+                    if (!$path) {
+                        throw new \Exception("ファイルの保存に失敗しました");
+                    }
+                    $paths[] = $path;
+
+                $attachment = new Attachment([
+                    'article_id' => $article->id,
+                    'org_name' => $file_name,
+                    'name' => basename($path)
+                ]);
+
+                $attachment->save();
+                
             }
             DB::commit();
         } catch (\Exception $e) {
-            if ($paths) {
+            if (!empty($paths)) {
                 foreach ($paths as $path) {
                     Storage::delete($path);
                 }
@@ -116,26 +124,11 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article)
     {
 
-        // バリデーション
-        $request->validate([
-            'caption' => 'required|max:255',
-            'info' => 'max:255'
-        ]);
-
-        // Articleのデータを更新
         $article->fill($request->all());
 
-        // トランザクション開始
-        DB::beginTransaction();
         try {
-            // Article保存
             $article->save();
-
-            // トランザクション終了(成功)
-            DB::commit();
         } catch (\Exception $e) {
-            // トランザクション終了(失敗)
-            DB::rollback();
             back()->withErrors(['error' => '保存に失敗しました']);
         }
 
