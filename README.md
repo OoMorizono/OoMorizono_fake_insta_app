@@ -28,7 +28,7 @@ google､githubのアカウントでもログイン出来るようにしまし�
 ![登録画面](./doc/readme_image/create.png)
 
 * 編集画面
-![編集画面](./doc/readme_image/edit.png)
+![編集画面](./doc/readme_image/edit_fix.png)
 
 * エラー登録画面
 ![エラー登録](./doc/readme_image/create_validation.png)
