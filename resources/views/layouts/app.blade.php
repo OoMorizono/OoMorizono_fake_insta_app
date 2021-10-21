@@ -21,8 +21,8 @@
         @include('layouts.navigation')
 
         <!-- Page Heading -->
-        <header class="bg-white shadow" >
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 mb-4" >
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 mb-3">
                 {{ $header }}
             </div>
         </header>
@@ -32,6 +32,7 @@
             {{ $slot }}
         </main>
     </div>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </body>

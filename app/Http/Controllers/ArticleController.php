@@ -7,6 +7,8 @@ use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Exception;
+
 
 
 class ArticleController extends Controller
@@ -154,9 +156,30 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        // DB::beginTransaction();
+        // try {
+        //     // 削除処理
+        //     DB::commit();
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return back()
+        //         ->withErrors($e->getMessage());
+        // }
+        // return redirect()
+        //     ->route('articles.index')
+        //     ->with(['flash_message' => '削除しました']);
+
+        $this->authorize('delete', $article);
+        $path = $article->image_path;
         DB::beginTransaction();
         try {
-            // 削除処理
+
+            $article->delete();
+            $article->attachment()->delete();
+            if (!Storage::delete($path)) {
+                throw new Exception('ファイルの削除に失敗しました');
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
